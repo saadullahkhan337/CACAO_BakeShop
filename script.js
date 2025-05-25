@@ -28,66 +28,83 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             } else {
                 const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                const headerOffset = header.offsetHeight;
-                let elementPosition = targetElement.getBoundingClientRect().top;
-                let offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                if (targetElement) {
+                    const headerOffset = header.offsetHeight;
+                    let elementPosition = targetElement.getBoundingClientRect().top;
+                    let offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+
+                    // Update active state after scroll completes
+                    setTimeout(() => {
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                    }, 1000); // Wait for smooth scroll to complete
                 }
             }
 
-                navLinks.forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-
-                if (navUl.classList.contains('active')) {
-                    navUl.classList.remove('active');
-                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                    menuToggle.setAttribute('aria-expanded', 'false');
+            if (navUl.classList.contains('active')) {
+                navUl.classList.remove('active');
+                menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                menuToggle.setAttribute('aria-expanded', 'false');
             }
         });
     });
 
     // Header scroll effect & Active link highlighting
+    let scrollTimeout;
     window.addEventListener('scroll', function() {
-        let currentSectionId = '';
-        const sections = document.querySelectorAll('section[id]');
-        const headerHeight = header.offsetHeight;
-        const scrollPosition = window.scrollY;
+        // Clear the previous timeout
+        clearTimeout(scrollTimeout);
+        
+        // Set a new timeout
+        scrollTimeout = setTimeout(function() {
+            let currentSectionId = '';
+            const sections = document.querySelectorAll('section[id]');
+            const headerHeight = header.offsetHeight;
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
 
-        sections.forEach(section => {
-            const rect = section.getBoundingClientRect();
-            const sectionTop = rect.top + scrollPosition;
-            const sectionBottom = sectionTop + rect.height;
-            
-            // Check if the section is in view
-            if (scrollPosition >= sectionTop - headerHeight && scrollPosition < sectionBottom - headerHeight) {
-                currentSectionId = section.getAttribute('id');
+            // Check if we're at the bottom of the page
+            if (scrollPosition + windowHeight >= documentHeight - 100) {
+                currentSectionId = 'contact';
+            } else {
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    const sectionTop = rect.top + scrollPosition;
+                    const sectionBottom = sectionTop + rect.height;
+                    
+                    // Check if the section is in view
+                    if (scrollPosition >= sectionTop - headerHeight && scrollPosition < sectionBottom - headerHeight) {
+                        currentSectionId = section.getAttribute('id');
+                    }
+                });
             }
-        });
 
-        // Special case for hero section
-        const heroSection = document.querySelector('#hero');
-        if (heroSection) {
-            const heroRect = heroSection.getBoundingClientRect();
-            if (scrollPosition < heroRect.bottom - headerHeight) {
-                currentSectionId = 'hero';
-            }
-        }
-
-        // Update active state
-        if (currentSectionId) {
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                const href = link.getAttribute('href').replace('#', '');
-                if (href === currentSectionId) {
-                    link.classList.add('active');
+            // Special case for hero section
+            const heroSection = document.querySelector('#hero');
+            if (heroSection) {
+                const heroRect = heroSection.getBoundingClientRect();
+                if (scrollPosition < heroRect.bottom - headerHeight) {
+                    currentSectionId = 'hero';
                 }
-            });
-        }
+            }
+
+            // Update active state
+            if (currentSectionId) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    const href = link.getAttribute('href').replace('#', '');
+                    if (href === currentSectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }, 100); // Add a small delay to ensure smooth scroll completes
     });
 
     // Mobile menu toggle
@@ -424,11 +441,93 @@ document.addEventListener('DOMContentLoaded', function() {
     if (reviewForm && reviewNotification) {
         reviewForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Get form data
+            const name = this.elements['name'].value;
+            const review = this.elements['review'].value;
+            const rating = this.elements['rating'].value;
+            
+            // Prepare WhatsApp message
+            const whatsappNumber = "923334258221";
+            const whatsappMessage = `🌟 *New Review from ${name}* 🌟\n\n` +
+                `Rating: ${'⭐'.repeat(rating)}\n\n` +
+                `Review: ${review}\n\n` +
+                `Sent from CACAO website`;
+            
+            // Show notification
             reviewNotification.style.display = 'flex';
+            reviewNotification.classList.add('show');
+            
+            // Reset form
+            reviewForm.reset();
+            
+            // After 2 seconds, redirect to WhatsApp
             setTimeout(() => {
-                reviewNotification.style.display = 'none';
-                reviewForm.reset();
-            }, 3500);
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+                window.open(whatsappUrl, '_blank');
+                
+                // Hide notification after 3.5 seconds
+                setTimeout(() => {
+                    reviewNotification.classList.remove('show');
+                    setTimeout(() => {
+                        reviewNotification.style.display = 'none';
+                    }, 300);
+                }, 1500);
+            }, 2000);
+        });
+    }
+
+    // Animated Counters in About Us
+    function animateCounters() {
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const increment = Math.ceil(target / 100);
+                if (count < target) {
+                    counter.innerText = count + increment;
+                    setTimeout(updateCount, 18);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCount();
+        });
+    }
+    // Trigger counters when About section is visible
+    const aboutSection = document.getElementById('about');
+    let countersStarted = false;
+    if (aboutSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !countersStarted) {
+                    animateCounters();
+                    countersStarted = true;
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(aboutSection);
+    }
+    // Meet the Bakers Popup Logic
+    const meetBakersBtn = document.getElementById('meetBakersBtn');
+    const bakersPopup = document.getElementById('bakersPopup');
+    const closeBakersPopup = document.getElementById('closeBakersPopup');
+    if (meetBakersBtn && bakersPopup) {
+        meetBakersBtn.addEventListener('click', () => {
+            bakersPopup.classList.add('active');
+        });
+    }
+    if (closeBakersPopup && bakersPopup) {
+        closeBakersPopup.addEventListener('click', () => {
+            bakersPopup.classList.remove('active');
+        });
+    }
+    if (bakersPopup) {
+        bakersPopup.addEventListener('click', function(e) {
+            if (e.target === bakersPopup) {
+                bakersPopup.classList.remove('active');
+            }
         });
     }
 });

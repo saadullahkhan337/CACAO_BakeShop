@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkoutPopup = document.getElementById('checkoutPopup');
     const closeCheckoutPopup = document.getElementById('closeCheckoutPopup');
     const checkoutForm = document.getElementById('checkoutForm');
+    const cartOverlay = document.getElementById('cartOverlay');
 
     // Add to Cart Buttons
     document.querySelectorAll('.add-to-cart').forEach(button => {
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
             showCartNotification('Item added to cart!');
             cartSidebar.classList.add('active');
+            if (cartOverlay) cartOverlay.classList.add('active');
         });
     });
 
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (cartToggle) {
         cartToggle.addEventListener('click', () => {
             cartSidebar.classList.add('active');
+            if (cartOverlay) cartOverlay.classList.add('active');
             updateCartUI();
         });
     }
@@ -43,6 +46,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeCart) {
         closeCart.addEventListener('click', () => {
             cartSidebar.classList.remove('active');
+            if (cartOverlay) cartOverlay.classList.remove('active');
+        });
+    }
+
+    // Close cart when clicking overlay
+    if (cartOverlay) {
+        cartOverlay.addEventListener('click', () => {
+            cartSidebar.classList.remove('active');
+            cartOverlay.classList.remove('active');
         });
     }
 
@@ -55,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             checkoutPopup.classList.add('active');
             cartSidebar.classList.remove('active');
+            if (cartOverlay) cartOverlay.classList.remove('active');
         });
     }
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CACAO - Exquisite Home Bakes</title>
+    <link rel="icon" type="image/x-icon" href="assets/5image.ico">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -148,6 +149,11 @@
                 width: 100%;
                 box-shadow: 0 6px 32px 0 rgba(44, 24, 16, 0.12);
                 z-index: 1001;
+                display: none;
+                border-top: 2px solid var(--accent-color);
+            }
+            .nav-links.active {
+                display: flex;
             }
             .nav-links a {
                 width: 100%;
@@ -156,6 +162,11 @@
                 border-radius: 0;
                 background: rgba(255,255,255,0.10);
                 box-shadow: none;
+                padding: 15px 20px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-links a:last-child {
+                border-bottom: none;
             }
         }
 
@@ -759,21 +770,21 @@
                     <img src="assets/1image.jpg" alt="Chocolate Brownie" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
                     <h3 style="color: #2c1810;">Chocolate Brownie</h3>
                     <p style="color: #4a2b1f;">Our signature rich and fudgy brownie, made with premium dark chocolate and real butter.</p>
-                    <div class="price" style="color: #2c1810;">300 PKR</div>
+                    <div class="price" style="color: #2c1810;">300</div>
                     <button class="btn add-to-cart" data-id="chocolate-brownie" data-item="Chocolate Brownie" data-price="300">Add to Cart</button>
                 </div>
                 <div class="menu-item" style="--item-index: 1; background: rgba(255, 255, 255, 0.95);">
                     <img src="assets/3image.jpg" alt="Brookies" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
                     <h3 style="color: #2c1810;">Brookies</h3>
                     <p style="color: #4a2b1f;">A perfect combination of brownie and cookie, creating a unique and delicious treat.</p>
-                    <div class="price" style="color: #2c1810;">400 PKR</div>
+                    <div class="price" style="color: #2c1810;">400</div>
                     <button class="btn add-to-cart" data-id="brookies" data-item="Brookies" data-price="400">Add to Cart</button>
                 </div>
                 <div class="menu-item" style="--item-index: 2; background: rgba(255, 255, 255, 0.95);">
                     <img src="assets/4image.jpg" alt="Red Velvet Brownie" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
                     <h3 style="color: #2c1810;">Red Velvet Brownie</h3>
                     <p style="color: #4a2b1f;">Classic red velvet brownie with cream cheese swirl and chocolate chips.</p>
-                    <div class="price" style="color: #2c1810;">300 PKR</div>
+                    <div class="price" style="color: #2c1810;">300</div>
                     <button class="btn add-to-cart" data-id="red-velvet-brownie" data-item="Red Velvet Brownie" data-price="300">Add to Cart</button>
                 </div>
             </div>
@@ -812,7 +823,30 @@
         <section id="testimonials" class="container">
             <h2>Write a Review</h2>
             <span class="section-subtitle">Share your sweet experience with us</span>
-            
+            <!-- Review Carousel -->
+            <div class="review-carousel">
+                <button class="carousel-arrow left" id="reviewPrev"><i class="fas fa-chevron-left"></i></button>
+                <div class="carousel-track" id="reviewCarouselTrack">
+                    <!-- Example reviews, can be dynamically loaded -->
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">Absolutely delicious brownies! Will order again.</p>
+                        <div class="review-author">- Fatima</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-stars">★★★★☆</div>
+                        <p class="review-text">Loved the cookies, so fresh and tasty!</p>
+                        <div class="review-author">- Ali</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">Best dessert shop in Lahore. Highly recommended!</p>
+                        <div class="review-author">- Sana</div>
+                    </div>
+                </div>
+                <button class="carousel-arrow right" id="reviewNext"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <!-- Review Form -->
             <div class="review-form-container">
                 <form id="reviewForm" class="review-form">
                     <div class="form-group">
@@ -825,7 +859,7 @@
                     </div>
                     <div class="form-group rating-group">
                         <label>Rate Your Experience</label>
-                        <div class="rating-stars">
+                        <div class="rating-stars animated-stars">
                             <input type="radio" id="star5" name="rating" value="5" required>
                             <label for="star5" class="star">★</label>
                             <input type="radio" id="star4" name="rating" value="4">
@@ -842,6 +876,17 @@
                     <button type="submit" class="submit-review">Submit Review</button>
                 </form>
             </div>
+            <!-- Confetti/Thank You Popup -->
+            <div id="reviewConfettiPopup" class="popup-overlay">
+                <div class="popup-content" style="text-align:center;">
+                    <button class="popup-close" id="closeReviewConfetti" aria-label="Close popup">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h3>Thank You for Your Review!</h3>
+                    <canvas id="confettiCanvas" width="320" height="180" style="width:100%;max-width:320px;height:120px;"></canvas>
+                    <p>Your feedback means a lot to us and helps us grow!</p>
+                </div>
+            </div>
         </section>
 
         <section id="contact" class="container">
@@ -850,12 +895,10 @@
             <div class="contact-info">
                 <p><i class="fas fa-phone"></i> <a href="tel:+923334258221">+92 333 42 58 221</a></p>
                 <p><i class="fas fa-envelope"></i> <a href="mailto:info@cacaobakeshop.com">info@cacaobakeshop.com</a></p>
-                <p><i class="fas fa-map-marker-alt"></i> <a href="https://maps.google.com/?q=your-location" target="_blank">Your Location</a></p>
+                <p><i class="fas fa-map-marker-alt"></i> <a href="https://maps.google.com/?q=31.4815,74.3586" target="_blank">House # 123, Block 6, DHA Phase 6, Lahore, Pakistan</a></p>
             </div>
             <div class="social-icons">
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/cacaopakistan/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
             <button class="btn" id="orderInquiryBtn">Quick Order Inquiry</button>
         </section>
@@ -881,6 +924,7 @@
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                 </div>
+                <div class="special-offer-badge">Special Offer</div>
             </div>
             <div class="welcome-message">
                 <p><i class="fas fa-gift"></i> <strong>Special Offer:</strong> Get 15% OFF on your first order!</p>
@@ -950,6 +994,8 @@
         </div>
     </div>
 
+    <!-- Cart Overlay for background dimming -->
+    <div id="cartOverlay" class="cart-overlay"></div>
     <!-- Cart Sidebar -->
     <div id="cartSidebar" class="cart-sidebar">
         <div class="cart-header">
@@ -1106,6 +1152,44 @@
                     reviewForm.reset();
                 });
             }
+
+            // Mobile Menu Toggle
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                // Toggle menu icon
+                const icon = this.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.nav-links') && !event.target.closest('.menu-toggle')) {
+                    navLinks.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // Close menu when clicking a link
+            const navItems = document.querySelectorAll('.nav-links a');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                });
+            });
         });
     </script>
 </body>
